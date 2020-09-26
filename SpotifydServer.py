@@ -138,6 +138,8 @@ class Actions:
 
             assert 'spotifyd' in os.listdir(tmp_dir)
 
+            raise TypeError('xxxxx')
+
             os.rename(F'{tmp_dir}/spotifyd', SPOTIFYD_BIN)
 
             response = Actions.restart()
