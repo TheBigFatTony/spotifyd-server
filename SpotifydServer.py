@@ -80,8 +80,8 @@ class GitHubReleaseDownloader:
 
 class Execute:
     @classmethod
-    def execute(cls, cmd: [str], expected_returncode: int = 0, timeout=None) -> (str, str):
-        p = Popen(cmd, stdout=PIPE, stderr=PIPE)
+    def execute(cls, cmd: [str], expected_returncode: int = 0, timeout=None, cwd=None) -> (str, str):
+        p = Popen(cmd, stdout=PIPE, stderr=PIPE, cwd=cwd)
         p.wait(timeout=timeout)
 
         stdout, stderr = p.communicate()
@@ -95,9 +95,9 @@ class Execute:
         return stdout, stderr
 
     @classmethod
-    def execute_to_dict(cls, cmd: [str], action_name: str, expected_returncode: int = 0, timeout=None) -> dict:
+    def execute_to_dict(cls, cmd: [str], action_name: str, expected_returncode: int = 0, timeout=None, cwd=None) -> dict:
         try:
-            stdout, stderr = cls.execute(cmd, expected_returncode, timeout)
+            stdout, stderr = cls.execute(cmd, expected_returncode, timeout, cwd)
             return dict(action=action_name, success=True, stdout=stdout, stderr=stderr)
         except Exception as e:
             return dict(action=action_name, success=False, message=str(e))
@@ -150,6 +150,10 @@ class Actions:
             return dict(action='update', success=False, message=str(e))
 
     @staticmethod
+    def update_self():
+        return Execute.execute_to_dict(['git', 'pull'], action_name='update-self', cwd=path_to_file)
+
+    @staticmethod
     def shutdown():
         return Execute.execute_to_dict(
             cmd=['sudo', 'systemctl', 'poweroff'],
@@ -178,7 +182,7 @@ def application(env, start_response):
     if URL == '/':
         return responder.return_html()
 
-    elif URL in ['/restart', '/update', '/shutdown', '/reboot']:
+    elif URL in ['/restart', '/update', '/update_self', '/shutdown', '/reboot']:
         action = URL[1:]
         response = Actions.act(action)
         return responder.return_json(response)
