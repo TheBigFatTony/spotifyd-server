@@ -113,7 +113,6 @@ class Actions:
         )
 
         response = dict()
-
         for cmd in commands:
 
             response = Execute.execute_to_dict(
@@ -142,6 +141,9 @@ class Actions:
             assert 'spotifyd' in os.listdir(tmp_dir)
 
             os.rename(F'{tmp_dir}/spotifyd', SPOTIFYD_BIN)
+
+            response = Actions.restart()
+            assert response['success'] == True, F'Failed to restart: {response}'
 
             return dict(action='update', success=True, message=F'Updated to version {g.version}')
         except Exception as e:
