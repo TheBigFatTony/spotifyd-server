@@ -118,12 +118,10 @@ class Actions:
             shutil.rmtree(SPOTIFYD_CACHE_DIR)
         os.makedirs(SPOTIFYD_CACHE_DIR, exist_ok=True)
 
-        response = Execute.execute_to_dict(
+        return Execute.execute_to_dict(
             cmd=['systemctl', '--user', 'start', 'spotifyd.service'],
             action_name='restart'
         )
-
-        return response
 
     @staticmethod
     def update():
@@ -151,7 +149,15 @@ class Actions:
 
     @staticmethod
     def update_self():
-        return Execute.execute_to_dict(['git', 'pull'], action_name='update-self', cwd=path_to_file)
+        response = Execute.execute_to_dict(['git', 'pull'], action_name='update-self', cwd=path_to_file)
+
+        if not response['success']:
+            return response
+
+        return Execute.execute_to_dict(
+            cmd=['systemctl', '--user', 'start', 'spotifyd.service'],
+            action_name='restart'
+        )
 
     @staticmethod
     def shutdown():
