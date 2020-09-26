@@ -154,10 +154,7 @@ class Actions:
         if not response['success']:
             return response
 
-        return Execute.execute_to_dict(
-            cmd=['systemctl', '--user', 'start', 'spotifyd_server.service'],
-            action_name='restart'
-        )
+        exit(0)
 
     @staticmethod
     def shutdown():
