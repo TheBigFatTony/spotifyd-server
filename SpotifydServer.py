@@ -157,7 +157,7 @@ class Actions:
             return response
 
         return Execute.execute_to_dict(
-            cmd=['systemctl', '--user', 'start', 'spotifyd.service'],
+            cmd=['systemctl', '--user', 'start', 'spotifyd_server.service'],
             action_name='restart'
         )
 
