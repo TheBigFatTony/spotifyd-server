@@ -1,4 +1,5 @@
 import os
+import shutil
 import json
 import requests
 from subprocess import Popen, PIPE
@@ -80,7 +81,6 @@ class GitHubReleaseDownloader:
 class Execute:
     @classmethod
     def execute(cls, cmd: [str], expected_returncode: int = 0, timeout=None) -> (str, str):
-        print(cmd)
         p = Popen(cmd, stdout=PIPE, stderr=PIPE)
         p.wait(timeout=timeout)
 
@@ -106,22 +106,22 @@ class Execute:
 class Actions:
     @staticmethod
     def restart():
-        commands = (
-            ['systemctl', '--user', 'stop', 'spotifyd.service'],
-            ['rm', '-rf', F'{SPOTIFYD_CACHE_DIR}/*'],
-            ['systemctl', '--user', 'start', 'spotifyd.service']
+        response = Execute.execute_to_dict(
+            cmd=['systemctl', '--user', 'stop', 'spotifyd.service'],
+            action_name='restart'
         )
 
-        response = dict()
-        for cmd in commands:
+        if not response['success']:
+            return response
 
-            response = Execute.execute_to_dict(
-                cmd=cmd,
-                action_name='restart'
-            )
+        if os.path.isdir(SPOTIFYD_CACHE_DIR):
+            shutil.rmtree(SPOTIFYD_CACHE_DIR)
+        os.makedirs(SPOTIFYD_CACHE_DIR, exist_ok=True)
 
-            if not response['success']:
-                return response
+        response = Execute.execute_to_dict(
+            cmd=['systemctl', '--user', 'start', 'spotifyd.service'],
+            action_name='restart'
+        )
 
         return response
 
@@ -174,13 +174,6 @@ class Actions:
 def application(env, start_response):
     responder = UwsgiResponder(env, start_response)
     URL = responder.URL
-    print()
-    print()
-    print()
-    print()
-    print()
-    print(URL)
-    print(env)
 
     if URL == '/':
         return responder.return_html()

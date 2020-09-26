@@ -16,22 +16,24 @@
 
 
 <div class="container">
-    <h1>Spotifd-Server</h1>
-</div>
-
-<div class="container">
+    <h1>Spotifd</h1>
     Restart:
     <button type="button" class="btn btn-primary" onclick="perform('restart')">Click here</button>
+    <br>
 
     Update:
     <button type="button" class="btn btn-primary" onclick="perform('update')">Click here</button>
+    <br>
 
+
+    <h1>Raspberry Pi</h1>
     Shutdown:
     <button type="button" class="btn btn-primary" onclick="perform('shutdown')">Click here</button>
+    <br>
 
     Reboot:
     <button type="button" class="btn btn-primary" onclick="perform('reboot')">Click here</button>
-
+    <br>
 </div>
 
 
@@ -44,6 +46,11 @@
         console.log('performing:', action)
         $.getJSON('/' + action, function (data) {
             console.log(data)
+            if (data['success']) {
+                alert(`Success!\n\n${JSON.stringify(data)}`)
+            } else {
+                alert(`Failure!\n\n${JSON.stringify(data)}`)
+            }
         })
     }
 
