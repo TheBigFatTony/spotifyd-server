@@ -16,32 +16,51 @@
 
 
 <div class="container">
-    <h1>Spotifd</h1>
-    Restart:
-    <button type="button" class="btn btn-primary" onclick="perform('restart')">Click here</button>
-    <br>
 
-    Update:
-    <button type="button" class="btn btn-primary" onclick="perform('update')">Click here</button>
-    <br>
+    <div class="jumbotron" style="background:darkseagreen">
+        <h1 class="display-4">Spotifd</h1>
+        <p class="lead">Control the <a href="https://github.com/Spotifyd/spotifyd">Spotifyd-library</a>.</p>
+        <hr class="my-4">
 
 
+        <button type="button" class="btn btn-success btn-lg" onclick="perform('restart')">Click here</button>
+        to restart Spotifyd.
+        <br>
+        <br>
 
-    <h1>Spotifd Server</h1>
-    Update:
-    <button type="button" class="btn btn-primary" onclick="perform('update_self')">Click here</button>
-    <br>
+        <button type="button" class="btn btn-primary btn-lg" onclick="perform('update')">Click here</button>
+        to update Spotifyd.
+    </div>
+
+    <div class="jumbotron" style="background:darksalmon">
+        <h1 class="display-4">This website</h1>
+        <p class="lead">Control this website (<a href="https://github.com/TheBigFatTony/spotifyd-server">Spotifyd-Server</a>).</p>
+        <hr class="my-4">
 
 
+        <button type="button" class="btn btn-primary btn-lg" onclick="perform('update_self')">Click here</button>
+        to update the website. Reboot the Raspberry Pi after to see the effect!
+    </div>
 
-    <h1>Raspberry Pi</h1>
-    Shutdown:
-    <button type="button" class="btn btn-primary" onclick="perform('shutdown')">Click here</button>
-    <br>
+    <div class="jumbotron" style="background:grey">
+        <h1 class="display-4">Raspberry Pi</h1>
+        <p class="lead">Control the Raspberry Pi.</p>
+        <hr class="my-4">
 
-    Reboot:
-    <button type="button" class="btn btn-primary" onclick="perform('reboot')">Click here</button>
-    <br>
+
+        <button type="button" class="btn btn-success btn-lg" onclick="perform('reboot')">Click here</button>
+        to reboot the Raspberry Pi.
+        <br>
+        <br>
+
+        <button type="button" class="btn btn-primary btn-lg" onclick="perform('shutdown')">Click here</button>
+        to shut down the Raspberry Pi. Must be turned back on manually.
+    </div>
+
+</div>
+
+
+<div class="container" id="messages">
 </div>
 
 
@@ -50,15 +69,25 @@
 <script>
     "use strict"
 
+    const messagesContainer = $('#messages')
+
     function perform(action) {
         console.log('performing:', action)
         $.getJSON('/' + action, function (data) {
-            console.log(data)
-            if (data['success']) {
-                alert(`Success!\n\n${JSON.stringify(data)}`)
-            } else {
-                alert(`Failure!\n\n${JSON.stringify(data)}`)
+            delete data.success
+
+            const type = data['success'] ? 'success' : 'danger'
+            const title = data['success'] ? 'Success!' : 'Failure!'
+
+            let html = `<div class="alert alert-${type}" role="alert"><h3 class="alert-heading">${title}</h3>`
+
+            for (const [key, value] of Object.entries(data)) {
+                html += `<h4>${key}:</h4> <p>${value}</p>`
             }
+
+            html += `</div>`
+
+            messagesContainer.prepend(html)
         })
     }
 
