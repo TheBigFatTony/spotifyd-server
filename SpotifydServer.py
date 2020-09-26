@@ -106,16 +106,25 @@ class Execute:
 class Actions:
     @staticmethod
     def restart():
-        cmd = ['systemctl', '--user', 'stop', 'spotifyd.service',
-               '&&',
-               'rm', '-rf', F'{SPOTIFYD_CACHE_DIR}/*',
-               '&&',
-               'systemctl', '--user', 'start', 'spotifyd.service']
-
-        return Execute.execute_to_dict(
-            cmd=cmd,
-            action_name='restart'
+        commands = (
+            ['systemctl', '--user', 'stop', 'spotifyd.service'],
+            ['rm', '-rf', F'{SPOTIFYD_CACHE_DIR}/*'],
+            ['systemctl', '--user', 'start', 'spotifyd.service']
         )
+
+        response = dict()
+
+        for cmd in commands:
+
+            response = Execute.execute_to_dict(
+                cmd=cmd,
+                action_name='restart'
+            )
+
+            if not response['success']:
+                return response
+
+        return response
 
     @staticmethod
     def update():
