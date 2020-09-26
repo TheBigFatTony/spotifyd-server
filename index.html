@@ -74,10 +74,12 @@
     function perform(action) {
         console.log('performing:', action)
         $.getJSON('/' + action, function (data) {
-            delete data.success
+            console.log(data)
 
             const type = data['success'] ? 'success' : 'danger'
             const title = data['success'] ? 'Success!' : 'Failure!'
+
+            delete data.success
 
             let html = `<div class="alert alert-${type}" role="alert"><h3 class="alert-heading">${title}</h3>`
 
