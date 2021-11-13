@@ -31,7 +31,6 @@ sudo visudo
 ```
 
 
-
 ~/.asoundrc:  (get dev id using aplay-l)
 ```
 pcm.!default {
@@ -46,23 +45,6 @@ ctl.!default {
 ```
 
 
-
-  - ~/.config/spotifyd/spotifyd.conf
-```
-[global]
-device_name = "spotipy"
-initial_volume = "90"
-bitrate = 160
-
-backend = "alsa"
-device = "plughw:1,0"
-
-cache_path = "/home/pi/.spotifyd_cache"
-device_type = "speaker"
-```
-
-
-
   - ~/.config/systemd/user/spotifyd.service
 ```
 [Unit]
@@ -74,7 +56,7 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-ExecStart=/home/pi/spotifyd --no-daemon --config-path=/home/pi/.config/spotifyd/spotifyd.conf
+ExecStart=/home/pi/spotifyd --no-daemon --config-path=/home/pi/spotifyd-server/spotifyd.conf
 Restart=always
 RestartSec=12
 
