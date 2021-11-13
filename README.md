@@ -50,15 +50,15 @@ ctl.!default {
   - ~/.config/spotifyd/spotifyd.conf
 ```
 [global]
-device_name = spotipy
-initial_volume = 90
+device_name = "spotipy"
+initial_volume = "90"
 bitrate = 160
 
-backend = alsa
-device = plughw:1,0
+backend = "alsa"
+device = "plughw:1,0"
 
-cache_path = /home/pi/.spotifyd_cache
-device_type = speaker
+cache_path = "/home/pi/.spotifyd_cache"
+device_type = "speaker"
 ```
 
 
